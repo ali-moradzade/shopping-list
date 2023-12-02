@@ -1,0 +1,37 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: always
+
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend
+    volumes:
+      - /usr/app/node_modules
+      - ./backend:/usr/app
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    volumes:
+      - /usr/app/node_modules
+      - ./frontend:/usr/app
+    expose:
+      - 4200
+    ports:
+      - "4200:4200"
+    stdin_open: true
+    depends_on:
+      - backend
